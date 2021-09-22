@@ -55,6 +55,7 @@ function makeHtmlBoard() {
     for (let x = 0; x < WIDTH; x++) {
       const cell = document.createElement("td");
       cell.setAttribute("id", `${y}-${x}`);
+      cell.classList.add("playableSpace");
       row.append(cell);
     }
     htmlBoard.append(row);
@@ -85,12 +86,12 @@ function findSpotForCol(x) {
 function placeInTable(y, x) {
   let marker=document.createElement("div");
   console.log(currPlayer)
-  if (currPlayer=1){
+  if (count % 2 === 0){
   marker.classList.add("piece");
+  }else {
+    marker.classList.add("pieceTwo");
   }
-  if(currPlayer = 2){
-    marker.classList.add("pieceTwo")
-  }
+ 
   y.appendChild(marker);
   
 }
@@ -99,16 +100,15 @@ function placeInTable(y, x) {
 
 function endGame(msg) {
   // TODO: pop up alert message
+  alert(msg);
 }
 
-/** handleClick: handle click of column top to play piece */
+
 
 function handleClick(evt) {
   
-  // get x from ID of clicked cell
-  let x = +evt.target.id;
 
-  // get next spot in column (if none, ignore click)
+  let x = +evt.target.id;
   let y = findSpotForCol(x);
   if (y === null) {
     return;
@@ -117,6 +117,7 @@ function handleClick(evt) {
   // place piece in board and add to HTML table
   // TODO: add line to update in-memory board
   placeInTable(y, x);
+  checkForTie();
   changePlayer();
   // check for win
   if (checkForWin()) {
@@ -126,8 +127,7 @@ function handleClick(evt) {
   // check for tie
   // TODO: check if all cells in board are filled; if so call, call endGame
 
-  // switch players
-  // TODO: switch currPlayer 1 <-> 2
+
   
 }
 
@@ -164,6 +164,19 @@ function checkForWin() {
     }
   }
 }
+
+const checkForTie = () =>{
+  const redPieces = document.querySelectorAll(".piece");
+  const bluePieces = document.querySelectorAll(".pieceTwo");
+  let redArr= Array.from(redPieces);
+  let blueArr= Array.from(bluePieces);
+  if(redArr.length === 21 && blueArr.length === 21){
+    alert("Tie!");
+  }
+  
+}
+
+
 
 makeBoard();
 makeHtmlBoard();

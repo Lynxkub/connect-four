@@ -5,23 +5,33 @@
   height: 50px;
   border: solid 1px #666;
 }
+body{
+  background: linear-gradient(rgb(218, 52, 218),rgb(58, 4, 58)) fixed;
+}
 
-/* pieces are div within game table cells: draw as colored circles */
+#board{
+  margin: auto;
+}
 
-.piece {
-  /* TODO: make into circles */
+h1{
+  text-align: center;
+}
+
+.piece{
   margin: 5px;
   width: 80%;
   height: 80%;
   background-color: red;
+  border-radius: 50%;
 }
 .pieceTwo{
   margin: 5px;
   width: 80%;
   height: 80%;
   background-color: blue;
+  border-radius: 50%;
 }
-/* TODO: make pieces red/blue,  depending on player 1/2 piece */
+
 
 /* column-top is table row of clickable areas for each column */
 
