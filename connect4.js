@@ -9,6 +9,18 @@ const WIDTH= 7;
 const HEIGHT = 6;
 
 let currPlayer = 1; // active player: 1 or 2
+let count = 0
+function changePlayer() {
+  count ++
+  if(count % 2 === 0){
+    currPlayer = 1;
+  }else{
+    currPlayer = 2;
+  }
+ 
+  
+  
+}
 let board = []; // array of rows, each row is array of cells  (board[y][x])
 
 /** makeBoard: create in-JS board structure:
@@ -49,18 +61,38 @@ function makeHtmlBoard() {
   }
 }
 
-/** findSpotForCol: given column x, return top empty y (null if filled) */
+
 
 function findSpotForCol(x) {
-  // TODO: write the real version of this, rather than always returning 0
-  return 0;
+  
+  let cells =[
+    document.getElementById(`0-${x}`),
+    document.getElementById(`1-${x}`),
+    document.getElementById(`2-${x}`),
+    document.getElementById(`3-${x}`),
+    document.getElementById(`4-${x}`),
+    document.getElementById(`5-${x}`)];
+    for (let i=cells.length-1; i>=0; i--){
+      if(!cells[i].hasChildNodes()){
+          return cells[i];
+      }
+    }
+    
 }
 
-/** placeInTable: update DOM to place piece into HTML table of board */
+
 
 function placeInTable(y, x) {
-  // TODO: make a div and insert into correct table cell
   let marker=document.createElement("div");
+  console.log(currPlayer)
+  if (currPlayer=1){
+  marker.classList.add("piece");
+  }
+  if(currPlayer = 2){
+    marker.classList.add("pieceTwo")
+  }
+  y.appendChild(marker);
+  
 }
 
 /** endGame: announce game end */
@@ -72,11 +104,12 @@ function endGame(msg) {
 /** handleClick: handle click of column top to play piece */
 
 function handleClick(evt) {
+  
   // get x from ID of clicked cell
-  var x = +evt.target.id;
+  let x = +evt.target.id;
 
   // get next spot in column (if none, ignore click)
-  var y = findSpotForCol(x);
+  let y = findSpotForCol(x);
   if (y === null) {
     return;
   }
@@ -84,7 +117,7 @@ function handleClick(evt) {
   // place piece in board and add to HTML table
   // TODO: add line to update in-memory board
   placeInTable(y, x);
-
+  changePlayer();
   // check for win
   if (checkForWin()) {
     return endGame(`Player ${currPlayer} won!`);
@@ -95,6 +128,7 @@ function handleClick(evt) {
 
   // switch players
   // TODO: switch currPlayer 1 <-> 2
+  
 }
 
 /** checkForWin: check board cell-by-cell for "does a win start here?" */
