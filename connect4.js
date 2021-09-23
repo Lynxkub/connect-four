@@ -4,7 +4,7 @@
  * column until a player gets four-in-a-row (horiz, vert, or diag) or until
  * board fills (tie)
  */
-
+const btn=document.querySelector("button");
 const WIDTH= 7;
 const HEIGHT = 6;
 
@@ -21,22 +21,33 @@ function changePlayer() {
   
   
 }
+btn.addEventListener("click", function(e){
+  document.querySelectorAll(".piece").forEach(e=>e.classList.add("deleteGame"));
+  document.querySelectorAll(".pieceTwo").forEach(e=>e.classList.add("deleteGame"));
+  setTimeout(function(){
+    document.querySelectorAll(".piece").forEach(e=>e.remove());
+  document.querySelectorAll(".pieceTwo").forEach(e=>e.remove());
+  },1000);
+ 
+})
+
+ 
+
+
 let board = []; // array of rows, each row is array of cells  (board[y][x])
 
-/** makeBoard: create in-JS board structure:
- *    board = array of rows, each row is array of cells  (board[y][x])
- */
+
 
 function makeBoard() {
   board=[HEIGHT * WIDTH]
 }
 
-/** makeHtmlBoard: make HTML table and row of column tops. */
+
 
 function makeHtmlBoard() {
 
   const htmlBoard=document.getElementById("board");
-  // TODO: add comment for this code
+  
   let top = document.createElement("tr");
   top.setAttribute("id", "column-top");
   top.addEventListener("click", handleClick);
@@ -99,7 +110,6 @@ function placeInTable(y, x) {
 /** endGame: announce game end */
 
 function endGame(msg) {
-  // TODO: pop up alert message
   alert(msg);
 }
 
@@ -114,9 +124,9 @@ function handleClick(evt) {
     return;
   }
 
-  // place piece in board and add to HTML table
   // TODO: add line to update in-memory board
   placeInTable(y, x);
+ 
   checkForTie();
   changePlayer();
   // check for win
@@ -124,8 +134,8 @@ function handleClick(evt) {
     return endGame(`Player ${currPlayer} won!`);
   }
 
-  // check for tie
-  // TODO: check if all cells in board are filled; if so call, call endGame
+  
+  
 
 
   
@@ -138,15 +148,16 @@ function checkForWin() {
     // Check four cells to see if they're all color of current player
     //  - cells: list of four (y, x) cells
     //  - returns true if all are legal coordinates & all match currPlayer
-
+    // let playersTurn = playedPiece();
     return cells.every(
       ([y, x]) =>
         y >= 0 &&
         y < HEIGHT &&
         x >= 0 &&
         x < WIDTH &&
-        board[y][x] === currPlayer
-    );
+        board[[y][x]] === currPlayer
+    
+    )
   }
 
   // TODO: read and understand this code. Add comments to help you.
@@ -170,11 +181,21 @@ const checkForTie = () =>{
   const bluePieces = document.querySelectorAll(".pieceTwo");
   let redArr= Array.from(redPieces);
   let blueArr= Array.from(bluePieces);
+
   if(redArr.length === 21 && blueArr.length === 21){
     alert("Tie!");
   }
   
 }
+
+let playedPiece = () =>{
+  if (count % 2 === 0){
+    return Array.from(document.getElementsByClassName("piece"));
+  }else{
+    return Array.from (document.getElementsByClassName("pieceTwo"));
+  }
+}
+
 
 
 
