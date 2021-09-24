@@ -6,7 +6,7 @@
   border: solid 1px #666;
 }
 body{
-  background: linear-gradient(rgb(218, 52, 218),rgb(58, 4, 58)) fixed;
+  background: linear-gradient(rgb(98, 98, 100),rgb(32, 37, 41)) fixed;
 }
 
 #board{
@@ -17,7 +17,7 @@ h1{
   text-align: center;
 }
 
-.piece{
+.p1{
   margin: 5px;
   width: 80%;
   height: 80%;
@@ -42,7 +42,7 @@ h1{
 
 
 
-.pieceTwo{
+.p2{
   margin: 5px;
   width: 80%;
   height: 80%;
@@ -65,7 +65,7 @@ h1{
 
 #button{
 position: absolute;
-left: 45%;
+left: 48.5%;
 top: 6%;
 color: white;
 background-color: black;

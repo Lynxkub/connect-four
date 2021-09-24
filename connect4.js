@@ -5,30 +5,47 @@
  * board fills (tie)
  */
 const btn=document.querySelector("button");
+
 const WIDTH= 7;
 const HEIGHT = 6;
 
 let currPlayer = 1; // active player: 1 or 2
-let count = 0
-function changePlayer() {
-  count ++
-  if(count % 2 === 0){
-    currPlayer = 1;
-  }else{
-    currPlayer = 2;
-  }
+// let count = 0;
+// let redSet = [];
+// let blueSet=[];
+// currSet=[];
+// function changePlayer(y) {
+//   count ++
+//   playedPiece(y);
+//   if(!count % 2 === 0){
+//     currPlayer = 1;
+//     currSet=redSet;
+    
+//   }else{
+//     currPlayer = 2;
+//     currSet=blueSet;
+   
+//   }
  
-  
-  
+function changePlayer(){
+  currPlayer = currPlayer === 1 ? 2 : 1;
 }
+  
+// }
 btn.addEventListener("click", function(e){
-  document.querySelectorAll(".piece").forEach(e=>e.classList.add("deleteGame"));
-  document.querySelectorAll(".pieceTwo").forEach(e=>e.classList.add("deleteGame"));
+  document.querySelectorAll(".p1").forEach(e=>e.classList.add("deleteGame"));
+  document.querySelectorAll(".p2").forEach(e=>e.classList.add("deleteGame"));
+  // count = 0;
+  // redSet=[];
+  // blueSet=[];
+  currPlayer = 1;
   setTimeout(function(){
-    document.querySelectorAll(".piece").forEach(e=>e.remove());
-  document.querySelectorAll(".pieceTwo").forEach(e=>e.remove());
+    document.querySelectorAll(".p1").forEach(e=>e.remove());
+  document.querySelectorAll(".p2").forEach(e=>e.remove());
   },1000);
- 
+board=[];
+makeBoard();
+
 })
 
  
@@ -39,7 +56,9 @@ let board = []; // array of rows, each row is array of cells  (board[y][x])
 
 
 function makeBoard() {
-  board=[HEIGHT * WIDTH]
+  for(let y = 0; y<HEIGHT; y++){
+    board.push(Array.from({length : WIDTH}));
+  }
 }
 
 
@@ -65,8 +84,7 @@ function makeHtmlBoard() {
     const row = document.createElement("tr");
     for (let x = 0; x < WIDTH; x++) {
       const cell = document.createElement("td");
-      cell.setAttribute("id", `${y}-${x}`);
-      cell.classList.add("playableSpace");
+      cell.setAttribute("id", `${y},${x}`);
       row.append(cell);
     }
     htmlBoard.append(row);
@@ -76,19 +94,24 @@ function makeHtmlBoard() {
 
 
 function findSpotForCol(x) {
-  
-  let cells =[
-    document.getElementById(`0-${x}`),
-    document.getElementById(`1-${x}`),
-    document.getElementById(`2-${x}`),
-    document.getElementById(`3-${x}`),
-    document.getElementById(`4-${x}`),
-    document.getElementById(`5-${x}`)];
-    for (let i=cells.length-1; i>=0; i--){
-      if(!cells[i].hasChildNodes()){
-          return cells[i];
-      }
+  for(let y = HEIGHT -1; y>=0; y--){
+    if(!board[y][x]){
+      return y;
     }
+  }
+  return null;
+  // let cells =[
+  //   document.getElementById(`0,${x}`),
+  //   document.getElementById(`1,${x}`),
+  //   document.getElementById(`2,${x}`),
+  //   document.getElementById(`3,${x}`),
+  //   document.getElementById(`4,${x}`),
+  //   document.getElementById(`5,${x}`)];
+  //   for (let i=cells.length-1; i>=0; i--){
+  //     if(!cells[i].hasChildNodes()){
+  //         return cells[i];
+  //     }
+  //   }
     
 }
 
@@ -96,18 +119,19 @@ function findSpotForCol(x) {
 
 function placeInTable(y, x) {
   let marker=document.createElement("div");
-  console.log(currPlayer)
-  if (count % 2 === 0){
+  // if (count % 2 === 0){
   marker.classList.add("piece");
-  }else {
-    marker.classList.add("pieceTwo");
+  // }else {
+    marker.classList.add(`p${currPlayer}`);
+    const spot = document.getElementById(`${y},${x}`)
+    spot.append(marker);
   }
  
-  y.appendChild(marker);
   
-}
+  
 
-/** endGame: announce game end */
+
+\
 
 function endGame(msg) {
   alert(msg);
@@ -120,21 +144,26 @@ function handleClick(evt) {
 
   let x = +evt.target.id;
   let y = findSpotForCol(x);
+  
+  
   if (y === null) {
     return;
   }
-
-  // TODO: add line to update in-memory board
-  placeInTable(y, x);
  
+
+  board[y][x] = currPlayer;
+  placeInTable(y,x);
+  
   checkForTie();
-  changePlayer();
-  // check for win
+ 
+ 
   if (checkForWin()) {
+    if(true){
     return endGame(`Player ${currPlayer} won!`);
   }
-
+  }
   
+  changePlayer();
   
 
 
@@ -144,20 +173,21 @@ function handleClick(evt) {
 /** checkForWin: check board cell-by-cell for "does a win start here?" */
 
 function checkForWin() {
+ 
   function _win(cells) {
     // Check four cells to see if they're all color of current player
     //  - cells: list of four (y, x) cells
     //  - returns true if all are legal coordinates & all match currPlayer
-    // let playersTurn = playedPiece();
+  
     return cells.every(
       ([y, x]) =>
         y >= 0 &&
         y < HEIGHT &&
         x >= 0 &&
         x < WIDTH &&
-        board[[y][x]] === currPlayer
-    
+       board[y][x] === currPlayer
     )
+   
   }
 
   // TODO: read and understand this code. Add comments to help you.
@@ -168,17 +198,19 @@ function checkForWin() {
       var vert = [[y, x], [y + 1, x], [y + 2, x], [y + 3, x]];
       var diagDR = [[y, x], [y + 1, x + 1], [y + 2, x + 2], [y + 3, x + 3]];
       var diagDL = [[y, x], [y + 1, x - 1], [y + 2, x - 2], [y + 3, x - 3]];
-
-      if (_win(horiz) || _win(vert) || _win(diagDR) || _win(diagDL)) {
+      
+        if (_win(horiz) ||_win(vert) || _win(diagDR) || _win(diagDL)) {
         return true;
-      }
+        }
+        
+    
     }
   }
 }
 
 const checkForTie = () =>{
-  const redPieces = document.querySelectorAll(".piece");
-  const bluePieces = document.querySelectorAll(".pieceTwo");
+  const redPieces = document.querySelectorAll(".p1");
+  const bluePieces = document.querySelectorAll(".p2");
   let redArr= Array.from(redPieces);
   let blueArr= Array.from(bluePieces);
 
@@ -188,16 +220,18 @@ const checkForTie = () =>{
   
 }
 
-let playedPiece = () =>{
-  if (count % 2 === 0){
-    return Array.from(document.getElementsByClassName("piece"));
-  }else{
-    return Array.from (document.getElementsByClassName("pieceTwo"));
-  }
-}
 
 
 
+// let playedPiece =(y)=>{
+//   let coord=[y.id];
+//   if(count % 2 === 0){
+//     return blueSet.push(coord)
+    
+//   }else{
+//     return redSet.push(coord);
+//   }
+// }
 
 makeBoard();
 makeHtmlBoard();
