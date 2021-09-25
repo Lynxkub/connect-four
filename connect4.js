@@ -131,7 +131,7 @@ function placeInTable(y, x) {
   
 
 
-\
+
 
 function endGame(msg) {
   alert(msg);
